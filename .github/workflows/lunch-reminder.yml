@@ -1,0 +1,58 @@
+name: 🍽️ Lunch Reminder Bot
+
+on:
+  schedule:
+    # Runs at 8:00 AM Minsk time (UTC+3) on weekdays
+    # This translates to 05:00 UTC (8:00 UTC+3)
+    - cron: '0 5 * * 1-5'
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  send-lunch-reminder:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 📦 Restore dependencies
+      run: dotnet restore
+
+    - name: 🔨 Build application
+      run: dotnet build --configuration Release --no-restore
+
+    - name: 💕 Send lunch reminder
+      run: dotnet run --configuration Release
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+
+  test-bot:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: 📥 Checkout code  
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: 📦 Restore dependencies
+      run: dotnet restore
+
+    - name: 🔨 Build application
+      run: dotnet build --configuration Release --no-restore
+
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
