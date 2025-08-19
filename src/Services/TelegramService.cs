@@ -1,29 +1,17 @@
 using Telegram.Bot;
-using Telegram.Bot.Types;
-using LunchReminderBot.Models;
 
 namespace LunchReminderBot.Services;
 
-public class TelegramService
+public class TelegramService(string botToken, string chatId)
 {
-    private readonly TelegramBotClient _client;
-    private readonly long _chatId;
+    private readonly TelegramBotClient _client = new(botToken);
+    private readonly long _chatId = long.Parse(chatId);
 
-    public TelegramService(string botToken, string chatId)
-    {
-        _client = new TelegramBotClient(botToken);
-        _chatId = long.Parse(chatId);
-    }
-
-    public async Task<bool> SendReminderAsync(ReminderMessage message)
+    public async Task<bool> SendReminderAsync(string message)
     {
         try
         {
-            var sentMessage = await _client.SendTextMessageAsync(
-                chatId: _chatId,
-                text: message.Text,
-                cancellationToken: CancellationToken.None
-            );
+            _ = await _client.SendMessage(chatId: _chatId, text: message, cancellationToken: CancellationToken.None);
 
             Console.WriteLine($"Message sent successfully at {DateTime.Now:HH:mm:ss}");
             return true;
@@ -39,7 +27,7 @@ public class TelegramService
     {
         try
         {
-            var me = await _client.GetMeAsync();
+            var me = await _client.GetMe();
             Console.WriteLine($"Bot connected successfully: @{me.Username}");
             return true;
         }

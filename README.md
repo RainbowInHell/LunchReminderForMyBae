@@ -1,14 +1,14 @@
 # 🍽️ Lunch Reminder Bot for My Bae
 
-A sweet and simple Telegram bot that sends personalized lunch reminders to your girlfriend every weekday between 8:00-8:30 AM (Minsk time). The bot uses Claude AI to generate unique, loving messages each time.
+A sweet and simple Telegram bot that sends personalized lunch reminders to your girlfriend every weekday between 8:00-8:30 AM (Minsk time). The bot uses pre-written romantic messages that vary by day of the week.
 
 ## ✨ Features
 
 - 💕 Sends personalized, romantic lunch reminders
-- 🤖 Uses Claude AI to generate unique messages every time
+- 📝 Pre-written messages that vary by day of the week for variety
 - ⏰ Runs automatically Monday-Friday at 8:00-8:30 AM Minsk time
 - 🔒 Secure API key management with GitHub Secrets
-- 🆓 Completely free using GitHub Actions
+- 🆓 Completely free using GitHub Actions (no external APIs required)
 - 🎲 Random timing within the 30-minute window for natural feel
 
 ## 🚀 Setup Instructions
@@ -27,29 +27,20 @@ A sweet and simple Telegram bot that sends personalized lunch reminders to your 
 3. Look for `"chat":{"id":` in the response
 4. Save the **Chat ID** number (you'll need this later)
 
-### Step 3: Get Claude API Key
-
-1. Visit [Claude API Console](https://console.anthropic.com/)
-2. Sign up or log in to your account  
-3. Go to "API Keys" section
-4. Create a new API key
-5. Save the **API Key** (you'll need this later)
-
-### Step 4: Fork This Repository
+### Step 3: Fork This Repository
 
 1. Fork this repository to your GitHub account
 2. Clone your forked repository locally
 
-### Step 5: Configure GitHub Secrets
+### Step 4: Configure GitHub Secrets
 
 1. Go to your forked repository on GitHub
 2. Navigate to Settings → Secrets and variables → Actions
 3. Create these Repository secrets:
    - `TELEGRAM_BOT_TOKEN`: Your bot token from Step 1
-   - `TELEGRAM_CHAT_ID`: Your chat ID from Step 2  
-   - `CLAUDE_API_KEY`: Your Claude API key from Step 3
+   - `TELEGRAM_CHAT_ID`: Your chat ID from Step 2
 
-### Step 6: Test the Bot
+### Step 5: Test the Bot
 
 1. Go to Actions tab in your GitHub repository
 2. Click on "🍽️ Lunch Reminder Bot" workflow
@@ -64,7 +55,7 @@ LunchReminderForMyBae/
 │   ├── Program.cs                 # Main application entry point
 │   ├── Services/
 │   │   ├── TelegramService.cs     # Telegram API integration
-│   │   ├── ClaudeService.cs       # Claude AI integration
+│   │   ├── MessageService.cs      # Pre-written message generation
 │   │   └── MessageGenerator.cs    # Message generation logic
 │   └── Models/
 │       └── ReminderMessage.cs     # Data models
@@ -82,8 +73,7 @@ To test the bot locally:
 1. Set environment variables:
 ```bash
 export TELEGRAM_BOT_TOKEN="your_bot_token"
-export TELEGRAM_CHAT_ID="your_chat_id" 
-export CLAUDE_API_KEY="your_claude_api_key"
+export TELEGRAM_CHAT_ID="your_chat_id"
 ```
 
 2. Run tests:
@@ -101,31 +91,34 @@ dotnet run -- --test --send-test
 1. **Scheduled Execution**: GitHub Actions runs the workflow every weekday at 8:00 AM Minsk time
 2. **Time Validation**: The bot checks if it's a weekday and within the 8:00-8:30 AM window
 3. **Random Delay**: Adds 0-30 minutes random delay for natural timing
-4. **Message Generation**: Claude AI creates a unique, loving reminder message
+4. **Message Generation**: Selects a random romantic message based on the day of the week
 5. **Message Delivery**: Sends the personalized message via Telegram
 
 ## 💝 Sample Messages
 
-The bot generates messages like:
-- "Good morning my love! 💕 Don't forget to order your lunch today, I want to make sure you eat well! 🥗✨"
-- "Hey beautiful! 😘 Time for lunch planning - treat yourself to something delicious! 🍽️💖"
-- "Morning sunshine! ☀️ It's Tuesday - perfect day to order something tasty for lunch! 🥙💕"
+The bot sends different messages for each day:
+
+**Monday Messages:**
+- "Good morning my love! 💕 It's Monday - let's start the week with a delicious lunch! 🥗✨"
+- "Hey beautiful! 😘 Monday lunch time - treat yourself to something amazing! 🍽️💖"
+
+**Tuesday Messages:**
+- "Good morning beautiful! 💕 Tuesday vibes - time for a delightful lunch! 🥗✨"
+- "Hey my love! 😘 Tuesday treat time - order something that makes you happy! 🍽️💖"
+
+**And unique messages for Wednesday, Thursday, and Friday!**
 
 ## 🔧 Troubleshooting
 
 ### Bot Not Sending Messages
 - Check GitHub Actions logs for errors
-- Verify all three secrets are correctly set
+- Verify both secrets are correctly set (TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
 - Ensure the bot token is valid
 - Confirm the chat ID is correct
 
 ### Wrong Timezone
 - The bot is configured for Belarus/Minsk timezone (UTC+3)
-- To change timezone, modify the timezone ID in `ClaudeService.cs` and `Program.cs`
-
-### Claude API Issues
-- Verify your Claude API key is valid and has credits
-- Check the API usage limits in Anthropic Console
+- To change timezone, modify the timezone ID in `MessageService.cs` and `Program.cs`
 
 ## 🎯 Customization
 
@@ -140,7 +133,7 @@ Edit `.github/workflows/lunch-reminder.yml` cron expression:
 ```
 
 ### Customize Messages
-Edit the prompt in `ClaudeService.cs` to change the message style and tone.
+Edit the message arrays in `MessageService.cs` to add your own personalized messages for each day.
 
 ### Change Time Window
 Modify the time range in `Program.cs`:
